@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pagar pedido — Bodega El Pana</title>
+    <meta
+      name="description"
+      content="Completa tus datos y paga con Pago Móvil. Te confirmamos por WhatsApp."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Pagar pedido — Bodega El Pana" />
+    <meta property="og:description" content="Completa tus datos y paga con Pago Móvil." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+
+    <!-- Tipografías de Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Figtree:wght@400;500;600;700&display=swap"
+    />
+
+    <!-- Hoja de estilos principal -->
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- ================= CABECERA ================= -->
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="index.html" class="brand-link">
+          <span class="brand-kicker">Bodega</span>
+          <span class="brand-title">El Pana</span>
+        </a>
+
+        <form id="headerSearchForm" class="header-search" role="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input
+            id="headerSearchInput"
+            type="search"
+            placeholder="Busca harina, café, queso…"
+            maxlength="80"
+            aria-label="Buscar productos"
+          />
+        </form>
+
+        <button type="button" id="openCartBtn" class="cart-pill-btn" aria-label="Abrir carrito">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
+            <path d="M3 6h18"></path>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <span class="cart-label">Carrito</span>
+          <span id="cartCountBadge" class="cart-count-badge">0</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ================= CONTENIDO PRINCIPAL ================= -->
+    <div class="page-wrapper">
+      <!-- Estado cuando el carrito está vacío -->
+      <main id="checkoutEmptyWrap" class="checkout-empty-wrap hidden">
+        <div class="panel checkout-empty-card">
+          <h1 style="font-size: 1.5rem; font-weight: 700">Tu carrito está vacío</h1>
+          <p style="margin-top: 0.5rem; color: var(--muted-foreground)">
+            Agrega productos para hacer tu pedido.
+          </p>
+          <a href="index.html" class="btn btn-brand" style="margin-top: 1.5rem">Ver productos</a>
+        </div>
+      </main>
+
+      <!-- Formulario de pago y resumen del pedido -->
+      <main id="checkoutGrid" class="checkout-grid">
+        <form id="checkoutForm" class="panel checkout-form" novalidate>
+          <h1 class="checkout-title">Tus datos</h1>
+
+          <div class="form-grid-2">
+            <label class="field-label">
+              <span class="field-label-text">Nombre</span>
+              <input
+                id="firstNameInput"
+                type="text"
+                maxlength="60"
+                autocomplete="given-name"
+                class="field-input"
+              />
+              <span id="err-firstName" class="field-error hidden"></span>
+            </label>
+
+            <label class="field-label">
+              <span class="field-label-text">Apellido</span>
+              <input
+                id="lastNameInput"
+                type="text"
+                maxlength="60"
+                autocomplete="family-name"
+                class="field-input"
+              />
+              <span id="err-lastName" class="field-error hidden"></span>
+            </label>
+
+            <label class="field-label">
+              <span class="field-label-text">Cédula</span>
+              <div class="cedula-row">
+                <select id="cedulaTypeSelect" class="field-input cedula-select">
+                  <option value="V">V</option>
+                  <option value="E">E</option>
+                  <option value="J">J</option>
+                </select>
+                <input
+                  id="cedulaNumInput"
+                  type="text"
+                  inputmode="numeric"
+                  maxlength="9"
+                  placeholder="12345678"
+                  class="field-input"
+                />
+              </div>
+              <span id="err-cedulaNum" class="field-error hidden"></span>
+            </label>
+
+            <label class="field-label">
+              <span class="field-label-text">Teléfono</span>
+              <input
+                id="phoneInput"
+                type="tel"
+                inputmode="tel"
+                maxlength="14"
+                placeholder="0414-1234567"
+                autocomplete="tel"
+                class="field-input"
+              />
+              <span id="err-phone" class="field-error hidden"></span>
+            </label>
+          </div>
+
+          <label class="field-label">
+            <span class="field-label-text">Dirección de entrega</span>
+            <textarea
+              id="addressInput"
+              maxlength="300"
+              placeholder="Sector, calle, casa/edificio, punto de referencia"
+              class="field-input field-textarea"
+            ></textarea>
+            <span id="err-address" class="field-error hidden"></span>
+          </label>
+
+          <!-- Cuadro de Pago Móvil -->
+          <div class="pago-movil-box">
+            <div class="pago-movil-header">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect>
+                <path d="M12 18h.01"></path>
+              </svg>
+              <h2>Pago Móvil</h2>
+            </div>
+            <p class="pago-movil-help">
+              Haz el pago a estos datos y envía el comprobante por WhatsApp:
+            </p>
+            <dl class="pago-movil-dl">
+              <dt>Banco</dt>
+              <dd id="pmBanco">Banco de Venezuela (0102)</dd>
+              <dt>Teléfono</dt>
+              <dd id="pmTelefono">0414-0000000</dd>
+              <dt>C.I./RIF</dt>
+              <dd id="pmDocumento">V-00000000</dd>
+              <dt>Monto</dt>
+              <dd id="pmMonto" class="font-display" style="font-weight: 700">0,00 Bs</dd>
+            </dl>
+          </div>
+
+          <button type="submit" class="btn btn-whatsapp">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
+            </svg>
+            Pagar con Pago Móvil por WhatsApp
+          </button>
+        </form>
+
+        <!-- Resumen lateral -->
+        <aside class="panel summary-card">
+          <h2 class="summary-title">Resumen</h2>
+          <ul id="checkoutSummaryList" class="summary-list"></ul>
+          <div class="summary-total">
+            <span>Total</span>
+            <span id="checkoutSummaryTotal">0,00 Bs</span>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <!-- ================= PIE DE PÁGINA ================= -->
+    <footer class="container site-footer">
+      <div class="tile footer-tile">
+        <div>
+          <p id="footerStoreName" class="footer-brand">Bodega El Pana</p>
+          <p class="footer-tagline">Tu bodega de confianza, ahora en línea.</p>
+        </div>
+        <div class="footer-info">
+          <p id="footerStoreAddress">Av. Principal, Coro, Falcón</p>
+          <p id="footerStoreHours">Lunes a sábado de 8:00 am a 8:00 pm</p>
+          <p id="footerStoreWhatsapp">WhatsApp +58 414-0000000</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ================= PANEL LATERAL DEL CARRITO ================= -->
+    <div id="cartBackdrop" class="cart-backdrop"></div>
+    <aside id="cartSheet" class="cart-sheet" aria-label="Tu carrito">
+      <div class="cart-sheet-header">
+        <h2 class="cart-sheet-title">Tu carrito</h2>
+        <button type="button" id="closeCartBtn" class="cart-close-btn" aria-label="Cerrar carrito">✕</button>
+      </div>
+
+      <div id="cartEmptyState" class="cart-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
+          <path d="M3 6h18"></path>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+        <p><b>Tu carrito está vacío</b></p>
+      </div>
+
+      <ul id="cartItemsList" class="cart-items-list hidden"></ul>
+
+      <div id="cartSheetFooter" class="cart-sheet-footer hidden">
+        <div class="cart-total-row">
+          <span>Total</span>
+          <span id="cartTotalValue">0,00 Bs</span>
+        </div>
+        <a href="checkout.html" class="btn btn-caramel">Ir a pagar</a>
+      </div>
+    </aside>
+
+    <!-- Lógica principal -->
+    <script src="main.js"></script>
+  </body>
+</html>
+
